@@ -1,0 +1,7 @@
+.submit__form {
+    position: absolute;
+    min-width: 320px;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+}

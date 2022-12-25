@@ -1,33 +1,39 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
+import React, {useEffect} from 'react'
+import {useSelector} from "react-redux";
+import {Routes, Route, Outlet, useNavigate, useLocation} from "react-router-dom";
 import './App.css'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Navbar from "./components/Navbar/index.jsx";
+import NotFound from "./pages/NotFound.jsx";
+import Home from "./pages/Home.jsx";
+import CreateTaskForm from "./components/CreateTaskForm/index.jsx";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const user = useSelector(state => state.auth.user)
+  const navigate = useNavigate()
+  const link = useLocation()
+
+  useEffect(() => {
+    if (user && paths.includes(link.pathname)) {
+      navigate('/')
+    }
+  }, [user, link])
+
+  const paths = ['/login', '/reg']
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <div className="App">
+        <Navbar/>
+        {!user && <Outlet/>}
+        {user &&
+            <Routes>
+              <Route path={'/'} element={<Home/>}/>
+              <Route path={'/create'} element={<CreateTaskForm/>}/>
+              <Route path={'/tasks'} element={<Home/>}/>
+              <Route path={'*'} element={<NotFound/>}/>
+            </Routes>
+        }
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
   )
 }
 
