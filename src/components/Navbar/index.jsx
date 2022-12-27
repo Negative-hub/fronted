@@ -32,8 +32,14 @@ const Navbar = () => {
         </div>
 
         <NavDropdown title="Действия" id="nav-dropdown">
-          {user ? <NavDropdown.Item eventKey="/logout">Выход</NavDropdown.Item> :
+          {user ? <div>
+                <NavDropdown.Item eventKey="/" className='media__item'>Главная</NavDropdown.Item>
+                <NavDropdown.Item eventKey="/create" className='media__item'>Создать задачу</NavDropdown.Item>
+                <NavDropdown.Item eventKey="/tasks" className='media__item'>Все задачи</NavDropdown.Item>
+                <NavDropdown.Item eventKey="/logout">Выход</NavDropdown.Item>
+          </div> :
               <>
+                <NavDropdown.Item eventKey="/" className='media__item'>Главная</NavDropdown.Item>
                 <NavDropdown.Item eventKey="/login">Войти</NavDropdown.Item>
                 <NavDropdown.Item eventKey="/registration">Зарегистрироваться</NavDropdown.Item>
               </>

@@ -8,3 +8,22 @@
     padding: 20px;
     border-radius: 10px;
 }
+
+.media__item {
+    display: none;
+}
+
+@media screen and (max-width: 576px) {
+    .submit__form {
+        min-width: 300px;
+        top: 60%
+    }
+
+    .media__item {
+        display: block;
+    }
+
+    .nav__items {
+        display: none;
+    }
+}

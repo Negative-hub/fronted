@@ -17,7 +17,7 @@ const Tasks = () => {
   }, [dispatch])
 
   return (
-      <div className='flex gap-x-2'>
+      <div className='flex gap-x-2 overflow-y-scroll'>
         {columns?.map(column => <Column key={column.id} column={column}/>)}
         <Column>
           <div className='plus' onClick={addColumnHandler}/>
