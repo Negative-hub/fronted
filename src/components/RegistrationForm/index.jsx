@@ -57,39 +57,39 @@ function RegistrationForm() {
 
         <Form onSubmit={submit} className='submit__form'>
           <Form.Group className="mb-3" controlId="formBasicEmail">
-            <Form.Label>Name</Form.Label>
+            <Form.Label className='text-white text-bold'>Ваше имя</Form.Label>
             <Form.Control
-                placeholder="Enter name"
+                placeholder="Введите имя"
                 onChange={event => setAuthData({...authData, name: event.target.value})}
             />
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="formBasicEmail">
-            <Form.Label>Email address</Form.Label>
+            <Form.Label className='text-white text-bold'>Ваш email</Form.Label>
             <Form.Control
                 type="email"
-                placeholder="Enter email"
+                placeholder="Введите email"
                 onChange={event => setAuthData({...authData, email: event.target.value})}
             />
-            <Form.Text className="text-muted">
-              We'll never share your email with anyone else.
-            </Form.Text>
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="formBasicPassword">
-            <Form.Label>Password</Form.Label>
+            <Form.Label className='text-white text-bold'>Введите пароль</Form.Label>
             <Form.Control
                 type="password"
-                placeholder="Password"
+                placeholder="Пароль"
                 onChange={event => setAuthData({...authData, password: event.target.value})}
             />
+            <Form.Text className="text-white">
+              Никому не сообщайте свой пароль
+            </Form.Text>
           </Form.Group>
           <Button
               className='bg-success'
               variant="success"
               onClick={submit}
           >
-            Submit
+            Зарегистрироваться
           </Button>
         </Form>
       </>

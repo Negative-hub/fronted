@@ -45,6 +45,75 @@ export const createTask = createAsyncThunk(
       }
     })
 
+export const updateTask = createAsyncThunk(
+    'tasks/updateTask',
+    async (payload, {rejectWithValue}) => {
+      try {
+        const {data} = await axios.put(`/api/tasks/${payload.id}`, {
+          id: payload.id,
+          title: payload.title,
+          description: payload.description,
+          finished_at: payload.finished_at,
+          column_id: payload.column_id
+        })
+
+        return data
+      } catch (e) {
+        return rejectWithValue(e.response?.data)
+      }
+    }
+)
+
+export const createColumn = createAsyncThunk(
+    'tasks/createColumn',
+    async (payload, {rejectWithValue}) => {
+      try {
+        const {data} = await axios.post('/api/columns', payload)
+
+        return data
+      } catch (e) {
+        return rejectWithValue(e.response?.data)
+      }
+    })
+
+export const updateColumn = createAsyncThunk(
+    'tasks/updateColumn',
+    async (payload, {rejectWithValue}) => {
+      try {
+        await axios.put(`/api/columns/${payload.id}`, payload)
+
+        return payload
+      } catch (e) {
+        return rejectWithValue(e.response?.data)
+      }
+    })
+
+export const deleteUserFromTask = createAsyncThunk(
+    'tasks/deleteUserFromTask',
+    async ({id}, {rejectWithValue}) => {
+      try {
+        await axios.delete(`/api/tasks/users/${id}`)
+
+        return id
+      } catch (e) {
+        return rejectWithValue(e.response?.data)
+      }
+    }
+)
+
+export const deleteTask = createAsyncThunk(
+    'tasks/deleteTask',
+    async ({id}, {rejectWithValue}) => {
+      try {
+        await axios.delete(`/api/tasks/${id}`)
+
+        return id
+      } catch (e) {
+        return rejectWithValue(e.response?.data)
+      }
+    }
+)
+
 const tasks = createSlice({
   name: 'tasks',
   initialState,
@@ -75,17 +144,48 @@ const tasks = createSlice({
     })
 
     builder.addCase(createTask.pending, state => {
-      console.log('00000000')
       state.isLoading = true
     })
     builder.addCase(createTask.fulfilled, (state) => {
-      console.log('0000000241')
       state.isLoading = false
     })
     builder.addCase(createTask.rejected, (state, action) => {
-      console.log('9421491284911')
       state.isLoading = false
       state.error = action.payload
+    })
+
+    builder.addCase(createColumn.fulfilled, (state, action) => {
+      state.tasks = [...state.tasks, {...action.payload, tasks: []}]
+    })
+
+    builder.addCase(updateColumn.fulfilled, (state, action) => {
+      state.tasks = state.tasks.map(column => {
+        return column.id === action.payload.id ? {
+          ...column,
+          ...action.payload
+        } : column
+      })
+    })
+
+    builder.addCase(deleteUserFromTask.fulfilled, (state, action) => {
+      state.tasks = state.tasks.map(column =>
+          ({
+            ...column,
+            tasks: column.tasks
+                .map(task => ({
+                  ...task,
+                  pivot: task.pivot.filter(pivot => pivot.id !== action.payload)
+                }))
+          })
+      )
+    })
+
+    builder.addCase(deleteTask.fulfilled, (state, action) => {
+      state.tasks = state.tasks.map(column => ({
+            ...column,
+            tasks: column.tasks.filter(task => task.id !== action.payload)
+          })
+      )
     })
   }
 })

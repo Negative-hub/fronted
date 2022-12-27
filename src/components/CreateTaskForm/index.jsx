@@ -5,54 +5,68 @@ import {fetchColumns, createTask} from "../../store/tasks.slice.js";
 
 const CreateTaskForm = () => {
   const dispatch = useDispatch()
-  const user = useSelector(state => state.auth)
+  const user = useSelector(state => state.auth.user)
   const columns = useSelector(state => state.tasks.columns)
 
   useEffect(() => {
       dispatch(fetchColumns())
-  }, [])
+  }, [dispatch])
 
-  useEffect(() => {
-    if (user) {
-      setTaskData({...taskData, user_id: 1})
-    }
-  }, [user])
-
-  const [taskData, setTaskData] = useState({
+  const initialState = {
     title: '',
     description: '',
+    finished_at: '',
     column_id: null,
-  })
+  }
+
+  const [taskData, setTaskData] = useState(initialState)
 
   const createTaskHandler = async () => {
-    console.log(taskData)
-    await dispatch(createTask(taskData))
+    const data = {
+      ...taskData,
+      user_id: user.id,
+      finished_at: taskData.finished_at.length ? taskData.finished_at : undefined
+    }
+    await dispatch(createTask(data))
+
+    setTaskData(initialState)
   }
 
   return (
       <Form className='submit__form'>
         <Form.Group className="mb-3" controlId="formBasicEmail">
-          <Form.Label>Название таски</Form.Label>
+          <Form.Label className='text-white text-bold'>Название таски</Form.Label>
           <Form.Control
-              placeholder="Enter title"
+              placeholder="Введите название"
+              value={taskData.title}
               onChange={event => setTaskData({...taskData, title: event.target.value})}
           />
         </Form.Group>
 
         <Form.Group className="mb-3" controlId="formBasicEmail">
-          <Form.Label>Описание таски</Form.Label>
+          <Form.Label className='text-white text-bold'>Описание таски</Form.Label>
           <Form.Control
-              type="email"
-              placeholder="Enter email"
+              placeholder="Введите описание"
+              value={taskData.description}
               onChange={event => setTaskData({...taskData, description: event.target.value})}
           />
         </Form.Group>
 
         <Form.Group className="mb-3" controlId="formBasicEmail">
-          <Form.Label>Выберите столбец</Form.Label>
-          <Dropdown className='bg-success w-100 border'>
-            <Dropdown.Toggle variant="success" className='w-100' id="dropdown-basic">
-              {columns?.find(column => column.id === taskData.column_id)?.title || 'Выберите столбик'}
+          <Form.Label className='text-white text-bold'>Введите дедлайн</Form.Label>
+          <Form.Control
+              type='date'
+              value={taskData.finished_at}
+              placeholder="Введите дедлайн"
+              onChange={event => setTaskData({...taskData, finished_at: event.target.value})}
+          />
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="formBasicEmail">
+          <Form.Label className='text-white text-bold'>Выберите столбец</Form.Label>
+          <Dropdown className='w-100'>
+            <Dropdown.Toggle variant="success" className='w-100 border-white' id="dropdown-basic">
+              {columns?.find(column => column.id === taskData.column_id)?.title || 'Выберите столбец'}
             </Dropdown.Toggle>
 
             <Dropdown.Menu>

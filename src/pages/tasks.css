@@ -1,0 +1,16 @@
+.plus {
+    background: #CD6D45;
+    height: 30px;
+    width: 5px;
+    position: relative;
+    left: 20px;
+}
+.plus:after {
+    content: "";
+    height: 5px;
+    width: 30px;
+    background: #CD6D45;
+    position: absolute;
+    left: -13px;
+    top: 12px;
+}

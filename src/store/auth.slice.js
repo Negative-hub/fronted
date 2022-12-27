@@ -13,7 +13,6 @@ export const login = createAsyncThunk('auth/login', async (userData, {rejectWith
 
     return data
   } catch (e) {
-    console.log(e)
     return rejectWithValue(e?.response?.data)
   }
 })
@@ -48,13 +47,11 @@ const auth = createSlice({
     })
     builder.addCase(login.fulfilled, (state, action) => {
       state.isLoading = false
-      console.log(action.payload, '124124')
 
       state.user = action.payload
     })
     builder.addCase(login.rejected, (state, action) => {
       state.isLoading = false
-      console.log(action.payload)
       state.error = action.payload
     })
 
