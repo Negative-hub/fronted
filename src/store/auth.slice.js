@@ -4,7 +4,8 @@ import axios from "../api/axios.js";
 const initialState = {
   user: null,
   isLoading: false,
-  error: null
+  error: null,
+  users: []
 }
 
 export const login = createAsyncThunk('auth/login', async (userData, {rejectWithValue}) => {
@@ -37,6 +38,16 @@ export const logout = createAsyncThunk('auth/logout', async (userData, {rejectWi
   }
 })
 
+export const fetchAllUsers = createAsyncThunk('auth/users', async (_, {rejectWithValue}) => {
+  try {
+    const {data} = await axios.get('api/users')
+
+    return data
+  } catch (e) {
+    return rejectWithValue(e?.response?.data)
+  }
+})
+
 const auth = createSlice({
   name: 'auth',
   initialState,
@@ -53,6 +64,10 @@ const auth = createSlice({
     builder.addCase(login.rejected, (state, action) => {
       state.isLoading = false
       state.error = action.payload
+    })
+
+    builder.addCase(fetchAllUsers.fulfilled, (state, action) => {
+      state.users = action.payload
     })
 
     builder.addCase(registration.pending, (state) => {

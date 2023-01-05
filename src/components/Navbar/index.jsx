@@ -18,9 +18,11 @@ const Navbar = () => {
                 <Nav.Item>
                   <Nav.Link onClick={() => handleNavigate('/')}>Главная</Nav.Link>
                 </Nav.Item>
-                <Nav.Item>
-                  <Nav.Link onClick={() => handleNavigate('/create')}>Создать задачу</Nav.Link>
-                </Nav.Item>
+                {user.is_moderator &&
+                    <Nav.Item>
+                      <Nav.Link onClick={() => handleNavigate('/create')}>Создать задачу</Nav.Link>
+                    </Nav.Item>
+                }
                 <Nav.Item>
                   <Nav.Link onClick={() => handleNavigate('/tasks')}>Все задачи</Nav.Link>
                 </Nav.Item>
@@ -34,7 +36,7 @@ const Navbar = () => {
         <NavDropdown title="Действия" id="nav-dropdown">
           {user ? <div>
                 <NavDropdown.Item eventKey="/" className='media__item'>Главная</NavDropdown.Item>
-                <NavDropdown.Item eventKey="/create" className='media__item'>Создать задачу</NavDropdown.Item>
+                {user.is_moderator && <NavDropdown.Item eventKey="/create" className='media__item'>Создать задачу</NavDropdown.Item>}
                 <NavDropdown.Item eventKey="/tasks" className='media__item'>Все задачи</NavDropdown.Item>
                 <NavDropdown.Item eventKey="/logout">Выход</NavDropdown.Item>
           </div> :

@@ -2,14 +2,16 @@ import React, {useEffect, useState} from 'react';
 import {Button, Form, Dropdown} from "react-bootstrap";
 import {useDispatch, useSelector} from "react-redux";
 import {fetchColumns, createTask} from "../../store/tasks.slice.js";
+import {fetchAllUsers} from "../../store/auth.slice.js";
 
 const CreateTaskForm = () => {
   const dispatch = useDispatch()
-  const user = useSelector(state => state.auth.user)
+  const users = useSelector(state => state.auth.users)
   const columns = useSelector(state => state.tasks.columns)
 
   useEffect(() => {
       dispatch(fetchColumns())
+      dispatch(fetchAllUsers())
   }, [dispatch])
 
   const initialState = {
@@ -17,6 +19,7 @@ const CreateTaskForm = () => {
     description: '',
     finished_at: '',
     column_id: null,
+    user_id: null
   }
 
   const [taskData, setTaskData] = useState(initialState)
@@ -24,7 +27,6 @@ const CreateTaskForm = () => {
   const createTaskHandler = async () => {
     const data = {
       ...taskData,
-      user_id: user.id,
       finished_at: taskData.finished_at.length ? taskData.finished_at : undefined
     }
     await dispatch(createTask(data))
@@ -72,8 +74,27 @@ const CreateTaskForm = () => {
             <Dropdown.Menu>
               <>
                 {columns?.map(column =>
-                    <Dropdown.Item onClick={event => setTaskData({...taskData, column_id: +event.target.id})} key={column.id} id={column.id}>
+                    <Dropdown.Item onClick={() => setTaskData({...taskData, column_id: column.id})} key={column.id} id={column.id}>
                       {column.title}
+                    </Dropdown.Item>
+                )}
+              </>
+            </Dropdown.Menu>
+          </Dropdown>
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="formBasicEmail">
+          <Form.Label className='text-white text-bold'>Выберите пользователя</Form.Label>
+          <Dropdown className='w-100'>
+            <Dropdown.Toggle variant="success" className='w-100 border-white' id="dropdown-basic">
+              {users?.find(user => user.id === taskData.user_id)?.email || 'Выберите пользователя'}
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu>
+              <>
+                {users?.map(user =>
+                    <Dropdown.Item onClick={() => setTaskData({...taskData, user_id: user.id})} key={user.id} id={user.id}>
+                      {user.email}
                     </Dropdown.Item>
                 )}
               </>

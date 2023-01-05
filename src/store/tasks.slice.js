@@ -20,6 +20,18 @@ export const fetchTasks = createAsyncThunk(
       }
     })
 
+export const fetchTasksByUser = createAsyncThunk(
+    'tasks/fetchTasksByUser',
+    async ({user, ...params}, {rejectWithValue}) => {
+      try {
+        const {data} = await axios.get(`/api/tasks/users/${user.id}`, {params})
+
+        return data
+      } catch (e) {
+        return rejectWithValue(e.response?.data)
+      }
+    })
+
 export const fetchColumns = createAsyncThunk(
     'tasks/fetchColumns',
     async (params, {rejectWithValue}) => {
@@ -129,6 +141,11 @@ const tasks = createSlice({
     builder.addCase(fetchTasks.rejected, (state, action) => {
       state.isLoading = false
       state.error = action.payload
+    })
+
+    builder.addCase(fetchTasksByUser.fulfilled, (state, action) => {
+      state.isLoading = false
+      state.tasks = action.payload
     })
 
     builder.addCase(fetchColumns.pending, state => {
